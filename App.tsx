@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { geminiService } from './services/geminiService';
 import { Message } from './types';
@@ -15,7 +16,7 @@ const App: React.FC = () => {
     const init = async () => {
       setMessages([{
         role: 'model',
-        text: "SISTEMA OPERACIONAL INICIADO. 🛰️\nO algoritmo do Instagram está em constante mudança. Digite seu NICHO para que eu possa analisar as tendências de Reels em tempo real e criar sua estratégia de crescimento.",
+        text: "SISTEMA OPERACIONAL 2026 INICIADO. 🛰️\nCalendário: 22 de Janeiro de 2026. \n\nO algoritmo evoluiu e a competição está em nível máximo. Digite seu NICHO para que eu possa cruzar dados de tendências de 2026 e desenhar sua rota de crescimento.",
         timestamp: Date.now()
       }]);
     };
@@ -58,7 +59,7 @@ const App: React.FC = () => {
     } catch (error) {
       setMessages(prev => {
         const newMessages = [...prev];
-        newMessages[newMessages.length - 1].text = "⚠️ FALHA DE COMUNICAÇÃO. Verifique sua chave de API ou conexão com o servidor Gemini.";
+        newMessages[newMessages.length - 1].text = "⚠️ FALHA NO NÚCLEO 2026. Verifique sua conexão com o servidor de inteligência.";
         return newMessages;
       });
     } finally {
@@ -87,13 +88,13 @@ const App: React.FC = () => {
             </div>
             <div>
               <h1 className="text-white font-black tracking-tighter text-lg leading-none">COMMANDER</h1>
-              <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-[0.2em] mt-1">Growth Intelligence</p>
+              <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-[0.2em] mt-1">Growth Intel 2026</p>
             </div>
           </div>
 
-          <div className="flex-1 space-y-8 overflow-y-auto pr-2">
+          <div className="flex-1 space-y-8 overflow-y-auto pr-2 custom-scrollbar">
             <div>
-              <p className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.2em] mb-4 ml-2">Protocolos de Elite</p>
+              <p className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.2em] mb-4 ml-2">Protocolos Atuais</p>
               <div className="space-y-2">
                 {STRATEGIC_TRACKS.map(track => (
                   <button
@@ -116,18 +117,15 @@ const App: React.FC = () => {
           <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
             <div className="bg-zinc-900/50 p-3 rounded-lg border border-white/5">
                 <div className="flex items-center justify-between mb-2">
-                   <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Status: Ativo</span>
+                   <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Relógio: 2026-01-22</span>
                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                </div>
-                <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500 w-3/4" />
                 </div>
             </div>
             <button 
                 onClick={() => window.location.reload()}
                 className="w-full py-3 rounded-xl bg-zinc-900 border border-white/5 text-[10px] font-black tracking-widest uppercase hover:bg-rose-500 hover:text-white transition-all duration-300"
             >
-                Reiniciar Módulo
+                Resetar Módulo
             </button>
           </div>
         </div>
@@ -135,7 +133,6 @@ const App: React.FC = () => {
 
       {/* Área Principal de Chat */}
       <main className="flex-1 flex flex-col min-w-0 bg-black">
-        {/* Header Superior */}
         <header className="h-20 flex items-center justify-between px-6 sm:px-10 border-b border-white/5 backdrop-blur-xl bg-black/60 z-30">
           <div className="flex items-center gap-4">
              <button 
@@ -147,20 +144,19 @@ const App: React.FC = () => {
                 </svg>
              </button>
              <div className="hidden sm:block">
-                <h2 className="text-[10px] font-black text-white tracking-[0.3em] uppercase opacity-90">Algorithmic Engine v3.0</h2>
-                <p className="text-[10px] text-zinc-600 font-medium">Análise em tempo real de Reels e Tendências</p>
+                <h2 className="text-[10px] font-black text-white tracking-[0.3em] uppercase opacity-90">Algorithmic Engine 2026.4</h2>
+                <p className="text-[10px] text-zinc-600 font-medium italic">Analisando ondas de Janeiro/2026</p>
              </div>
           </div>
           
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/10 border border-rose-500/20">
                 <div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                <span className="text-[10px] font-black text-rose-500 uppercase tracking-widest">Global Trend Search</span>
+                <span className="text-[10px] font-black text-rose-500 uppercase tracking-widest">Live Search 2026</span>
             </div>
           </div>
         </header>
 
-        {/* Container de Mensagens */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth custom-scrollbar">
           <div className="max-w-4xl mx-auto p-6 sm:p-10 lg:p-12 space-y-6">
             {messages.map((msg, idx) => (
@@ -178,7 +174,6 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Input de Comando */}
         <div className="p-6 sm:p-10 border-t border-white/5 bg-gradient-to-t from-[#050505] to-transparent">
           <div className="max-w-4xl mx-auto">
             <div className="relative group">
@@ -192,7 +187,7 @@ const App: React.FC = () => {
                     handleSendMessage(inputText);
                   }
                 }}
-                placeholder="Ex: Qual a tendência de Reels para confeitaria esta semana?"
+                placeholder="Nicho ou objetivo em 2026..."
                 className="relative w-full bg-[#0d0d0d] border border-white/10 rounded-2xl px-6 py-5 pr-16 text-sm text-white focus:outline-none focus:border-rose-500/50 transition-all resize-none min-h-[72px] placeholder:text-zinc-700 font-medium"
               />
               <button
@@ -210,7 +205,7 @@ const App: React.FC = () => {
               </button>
             </div>
             <p className="text-center mt-4 text-[9px] text-zinc-700 font-bold uppercase tracking-[0.2em]">
-              Powered by Google Gemini 3 Flash & Global Search Engine
+              Real-Time Search: 22 de Janeiro de 2026 | Google Gemini 3
             </p>
           </div>
         </div>
