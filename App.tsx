@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { geminiService } from './services/geminiService';
 import { Message } from './types';
@@ -14,20 +13,21 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const init = async () => {
-      setIsLoading(true);
       setMessages([{
         role: 'model',
-        text: "SISTEMA ONLINE. 🛰️\nPronto para analisar o algoritmo. Para um briefing de elite, informe seu NICHO e OBJETIVO ATUAL.",
+        text: "SISTEMA OPERACIONAL INICIADO. 🛰️\nO algoritmo do Instagram está em constante mudança. Digite seu NICHO para que eu possa analisar as tendências de Reels em tempo real e criar sua estratégia de crescimento.",
         timestamp: Date.now()
       }]);
-      setIsLoading(false);
     };
     init();
   }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
     }
   }, [messages]);
 
@@ -47,14 +47,18 @@ const App: React.FC = () => {
         setMessages(prev => {
           const newMessages = [...prev];
           const lastIdx = newMessages.length - 1;
-          newMessages[lastIdx] = { ...newMessages[lastIdx], text: updatedText, sources };
+          newMessages[lastIdx] = { 
+            ...newMessages[lastIdx], 
+            text: updatedText, 
+            sources: sources || newMessages[lastIdx].sources 
+          };
           return newMessages;
         });
       });
     } catch (error) {
       setMessages(prev => {
         const newMessages = [...prev];
-        newMessages[newMessages.length - 1].text = "ERRO NA CENTRAL. Verifique a conexão com o servidor de inteligência.";
+        newMessages[newMessages.length - 1].text = "⚠️ FALHA DE COMUNICAÇÃO. Verifique sua chave de API ou conexão com o servidor Gemini.";
         return newMessages;
       });
     } finally {
@@ -63,23 +67,33 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#050505] text-zinc-300 overflow-hidden">
-      {/* Sidebar - Professional Command Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-80 bg-[#0a0a0a] border-r border-white/5 transform transition-transform lg:relative lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="flex flex-col h-full p-8">
-          <div className="flex items-center gap-4 mb-12">
-            <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-              <div className="w-8 h-8 instagram-gradient rounded-md animate-pulse" />
+    <div className="flex h-screen bg-[#050505] text-zinc-300 overflow-hidden font-sans">
+      {/* Sidebar Móvel Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Principal */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0a0a0a] border-r border-white/5 transform transition-all duration-300 lg:relative lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex flex-col h-full p-6">
+          <div className="flex items-center gap-3 mb-10 px-2">
+            <div className="w-10 h-10 instagram-gradient rounded-xl flex items-center justify-center shadow-lg shadow-rose-500/10">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
             <div>
-              <h1 className="text-white font-black tracking-tighter text-xl">COMMANDER</h1>
-              <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Elite Growth OS</p>
+              <h1 className="text-white font-black tracking-tighter text-lg leading-none">COMMANDER</h1>
+              <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-[0.2em] mt-1">Growth Intelligence</p>
             </div>
           </div>
 
-          <div className="space-y-8 flex-1">
+          <div className="flex-1 space-y-8 overflow-y-auto pr-2">
             <div>
-              <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4">Trilhas de Performance</p>
+              <p className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.2em] mb-4 ml-2">Protocolos de Elite</p>
               <div className="space-y-2">
                 {STRATEGIC_TRACKS.map(track => (
                   <button
@@ -88,65 +102,87 @@ const App: React.FC = () => {
                         handleSendMessage(track.prompt);
                         setIsSidebarOpen(false);
                     }}
-                    className="w-full text-left p-4 rounded-xl bg-white/5 border border-transparent hover:border-white/10 hover:bg-white/10 transition-all group"
+                    className="w-full text-left p-4 rounded-xl bg-white/5 border border-transparent hover:border-white/10 hover:bg-white/10 transition-all group relative overflow-hidden"
                   >
-                    <p className="text-sm font-semibold text-zinc-200 group-hover:text-rose-400 transition-colors">{track.label}</p>
-                    <p className="text-[10px] text-zinc-500 mt-1 line-clamp-1">{track.prompt}</p>
+                    <p className="text-xs font-bold text-zinc-300 group-hover:text-rose-400 transition-colors relative z-10">{track.label}</p>
+                    <p className="text-[9px] text-zinc-600 mt-1 line-clamp-1 group-hover:text-zinc-400 relative z-10">{track.prompt}</p>
+                    <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 to-rose-500/0 group-hover:from-rose-500/5 transition-all" />
                   </button>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/5">
-            <div className="flex items-center justify-between mb-4">
-               <span className="text-[10px] font-bold text-emerald-500/60 uppercase">System Health</span>
-               <span className="text-[10px] text-zinc-500">Stable</span>
+          <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
+            <div className="bg-zinc-900/50 p-3 rounded-lg border border-white/5">
+                <div className="flex items-center justify-between mb-2">
+                   <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Status: Ativo</span>
+                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                </div>
+                <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 w-3/4" />
+                </div>
             </div>
             <button 
                 onClick={() => window.location.reload()}
-                className="w-full py-3 rounded-lg bg-zinc-900 border border-white/5 text-xs font-bold hover:bg-zinc-800 transition-colors"
+                className="w-full py-3 rounded-xl bg-zinc-900 border border-white/5 text-[10px] font-black tracking-widest uppercase hover:bg-rose-500 hover:text-white transition-all duration-300"
             >
-                REINICIAR MÓDULO
+                Reiniciar Módulo
             </button>
           </div>
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col min-w-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/20 via-black to-black">
-        {/* Header */}
-        <header className="h-20 flex items-center justify-between px-8 border-b border-white/5 backdrop-blur-md bg-black/40 z-30">
+      {/* Área Principal de Chat */}
+      <main className="flex-1 flex flex-col min-w-0 bg-black">
+        {/* Header Superior */}
+        <header className="h-20 flex items-center justify-between px-6 sm:px-10 border-b border-white/5 backdrop-blur-xl bg-black/60 z-30">
           <div className="flex items-center gap-4">
-             <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 text-zinc-400">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
+             <button 
+               onClick={() => setIsSidebarOpen(true)} 
+               className="lg:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+             >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
              </button>
              <div className="hidden sm:block">
-                <h2 className="text-xs font-bold text-white tracking-widest uppercase">Instagram Intelligence Unit</h2>
-                <p className="text-[10px] text-zinc-500 mt-0.5">Decision-ready insights for viral scaling</p>
+                <h2 className="text-[10px] font-black text-white tracking-[0.3em] uppercase opacity-90">Algorithmic Engine v3.0</h2>
+                <p className="text-[10px] text-zinc-600 font-medium">Análise em tempo real de Reels e Tendências</p>
              </div>
           </div>
           
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-bold text-emerald-500">LIVE TREND ENGINE</span>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/10 border border-rose-500/20">
+                <div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                <span className="text-[10px] font-black text-rose-500 uppercase tracking-widest">Global Trend Search</span>
             </div>
           </div>
         </header>
 
-        {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 sm:p-12 space-y-4">
-          <div className="max-w-4xl mx-auto">
+        {/* Container de Mensagens */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth custom-scrollbar">
+          <div className="max-w-4xl mx-auto p-6 sm:p-10 lg:p-12 space-y-6">
             {messages.map((msg, idx) => (
               <ChatMessage key={idx} message={msg} sources={msg.sources} />
             ))}
+            {isLoading && messages[messages.length-1].role === 'user' && (
+              <div className="flex justify-start animate-pulse">
+                <div className="bg-zinc-900 border border-white/5 rounded-2xl p-4 flex gap-2">
+                  <div className="w-2 h-2 rounded-full bg-zinc-700 animate-bounce" />
+                  <div className="w-2 h-2 rounded-full bg-zinc-700 animate-bounce [animation-delay:0.2s]" />
+                  <div className="w-2 h-2 rounded-full bg-zinc-700 animate-bounce [animation-delay:0.4s]" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Pro Input Area */}
-        <div className="p-8 backdrop-blur-xl bg-black/60 border-t border-white/5">
+        {/* Input de Comando */}
+        <div className="p-6 sm:p-10 border-t border-white/5 bg-gradient-to-t from-[#050505] to-transparent">
           <div className="max-w-4xl mx-auto">
-            <div className="relative">
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-rose-500 to-orange-500 rounded-2xl opacity-10 group-focus-within:opacity-30 transition duration-500 blur" />
               <textarea
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
@@ -156,23 +192,26 @@ const App: React.FC = () => {
                     handleSendMessage(inputText);
                   }
                 }}
-                placeholder="Solicite uma análise estratégica ou briefing de tendências..."
-                className="w-full bg-[#0f0f0f] border border-white/10 rounded-2xl px-6 py-5 pr-20 text-sm text-white focus:outline-none focus:ring-2 focus:ring-rose-500/30 transition-all resize-none min-h-[70px] placeholder:text-zinc-600 shadow-inner"
+                placeholder="Ex: Qual a tendência de Reels para confeitaria esta semana?"
+                className="relative w-full bg-[#0d0d0d] border border-white/10 rounded-2xl px-6 py-5 pr-16 text-sm text-white focus:outline-none focus:border-rose-500/50 transition-all resize-none min-h-[72px] placeholder:text-zinc-700 font-medium"
               />
               <button
                 onClick={() => handleSendMessage(inputText)}
                 disabled={!inputText.trim() || isLoading}
-                className={`absolute right-4 bottom-4 p-3 rounded-xl transition-all ${
+                className={`absolute right-4 bottom-4 p-3 rounded-xl transition-all duration-300 ${
                   inputText.trim() && !isLoading 
-                    ? 'instagram-gradient scale-100 opacity-100 shadow-[0_0_20px_rgba(253,89,73,0.3)]' 
+                    ? 'instagram-gradient scale-100 opacity-100 shadow-lg shadow-rose-500/20 active:scale-90' 
                     : 'bg-zinc-800 scale-95 opacity-50 cursor-not-allowed'
                 }`}
               >
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </button>
             </div>
+            <p className="text-center mt-4 text-[9px] text-zinc-700 font-bold uppercase tracking-[0.2em]">
+              Powered by Google Gemini 3 Flash & Global Search Engine
+            </p>
           </div>
         </div>
       </main>
